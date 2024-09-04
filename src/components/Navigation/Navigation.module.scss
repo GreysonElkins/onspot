@@ -1,0 +1,44 @@
+.Navigation {
+  position: relative;
+  background: white;
+  border-bottom: 1px solid black;
+  min-height: 40px;
+  max-height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.NavDropdown {
+  position: absolute;
+  transition: top 400ms;
+  z-index: -1;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+
+  * {
+    padding: 4px 8px;
+    width: calc(100% - 16px);
+    border-bottom: 1px solid black;
+  }
+}
+
+.open {
+  top: 17px;
+}
+
+.closed {
+  top: -100%;
+}
+
+.NavLink {
+  text-decoration: none;
+  color: black;
+  font-size: 12px;
+}
+
+.active {
+  color: green;  
+}
