@@ -9,16 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@auth0/nextjs-auth0": "^3.5.0",
+    "@clerk/nextjs": "^5.4.1",
+    "@vercel/kv": "^2.0.0",
     "axios": "^1.7.7",
-    "connect-redis": "^7.1.1",
-    "express-session": "^1.18.0",
-    "ioredis": "^5.4.1",
     "next": "14.2.7",
     "next-app-session": "^1.0.7",
     "react": "^18",
     "react-dom": "^18",
-    "sass": "^1.78.0"
+    "sass": "^1.78.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",

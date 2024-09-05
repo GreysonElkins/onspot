@@ -2,7 +2,7 @@ import * as crypto from 'node:crypto'
 import { NextResponse } from "next/server"
 import { NextApiRequest } from 'next'
 
-import session from '@/app/api/session' 
+import Store from '../../store'
 import axios from 'axios'
 
 const getUserAuthentication = async (request: NextApiRequest) => {
@@ -14,7 +14,7 @@ const getUserAuthentication = async (request: NextApiRequest) => {
   )
 
   const state = crypto.randomBytes(16).toString('hex')
-  await session(request).set('spotify_auth_state', state)
+  Store.set('auth_state', state, 'spotify')
   const scope = [
     'user-read-private',
     'user-read-email',
@@ -22,9 +22,6 @@ const getUserAuthentication = async (request: NextApiRequest) => {
     'user-library-read',
     'playlist-read-collaborative'
   ].join(' ')
-
-  const set_state = await session(request).get('spotify_auth_state')
-  console.log({ set_state })
   
   const params = new URLSearchParams({
     response_type: 'code',
@@ -46,7 +43,7 @@ type TokenResponse = {
   refresh_token: string
 }
 
-const getBearerToken = async (request: NextApiRequest, code: string) => {
+const getBearerToken = async (code: string) => {
   const { BASE_URL, SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } = process.env
   if (!BASE_URL || !SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET) return NextResponse.json(
     { error: "The API is not configured to authenticate with Spotify" },
@@ -62,19 +59,18 @@ const getBearerToken = async (request: NextApiRequest, code: string) => {
   }}
   )
 
-  const setSession = Object.keys(data).map(async (key) => {
-    return session(request).set(`spotify_${key}`, data[key])
+  const storedResponse = Object.keys(data).map(async (key) => {
+    await Store.set(key, String(data[key]), 'spotify')
   })
 
-  await Promise.all(setSession)
+  await Promise.all(storedResponse)
 
   return NextResponse.redirect('/')
 }
 
-const authStateIsAcceptable = async (request: NextApiRequest, final?: string) => {
-  const original = await session(request).get('spotify_auth_state')
-  console.log({ original, final })
-  return (!!original && original === final)
+const authStateIsAcceptable = async (final?: string) => {
+  const original = await Store.get('auth_state', 'spotify')
+  return (typeof original === 'string' && original === final)
 } 
 
 export const GET = async (request: NextApiRequest) => {
@@ -82,11 +78,11 @@ export const GET = async (request: NextApiRequest) => {
   const code = searchParams.get('code')
   const state = searchParams.get('state') || undefined
   if (!code && !state) return getUserAuthentication(request)
-  else if (!await authStateIsAcceptable(request, state)) {
+  else if (!await authStateIsAcceptable(state)) {
     return NextResponse.json(
       { error: "The connection with Spotify is insecure at this time." }, 
       { status: 403 })
   } else if (code) {
-    return getBearerToken(request, code)
+    return getBearerToken(code)
   }
 }

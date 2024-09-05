@@ -1,3 +1,9 @@
+@mixin nav-link {
+  text-decoration: none;
+  color: black;
+  font-size: 12px;
+}
+
 .Navigation {
   position: relative;
   background: white;
@@ -7,18 +13,28 @@
   display: flex;
   align-items: center;
   padding: 0 20px;
+  justify-content: flex-end;
 }
 
 .NavDropdown {
   position: absolute;
-  transition: top 400ms;
+  transition: bottom 400ms;
   z-index: -1;
   border: 1px solid black;
   display: flex;
   flex-direction: column;
   padding: 0;
+  margin: 0;
+  right: 0;
+
+  button {
+    @include nav-link;
+    background: none;
+    border: none;
+  }
 
   * {
+    @include nav-link;
     padding: 4px 8px;
     width: calc(100% - 16px);
     border-bottom: 1px solid black;
@@ -26,17 +42,15 @@
 }
 
 .open {
-  top: 17px;
+  bottom: calc(-100% - 7px);
 }
 
 .closed {
-  top: -100%;
+  bottom: 0
 }
 
 .NavLink {
-  text-decoration: none;
-  color: black;
-  font-size: 12px;
+  @include nav-link;
 }
 
 .active {

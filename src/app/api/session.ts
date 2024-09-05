@@ -1,27 +1,22 @@
-import nextAppSession, { promisifyStore } from "next-app-session";
-import Redis from 'ioredis'
-import RedisStoreFactory from "connect-redis"
-import RedisStore from "connect-redis";
 
-type SessionData = {
-  spotify_auth_state?: string
-  spotify_access_token?: string
-  spotify_token_type?: string
-  spotify_scope?: string
-  spotify_expires_in?: number
-  spotify_refresh_token?: string
+import "server-only"
+import { cookies } from "next/headers"
+
+export type SessionId = string
+
+export const getSessionId = (): SessionId | undefined => (
+  cookies().get("session-id")?.value
+)
+
+const setSessionId = (sessionId: SessionId): void => {
+  cookies().set("session-id", sessionId)
 }
 
+export const getSessionIdAndCreateIfMissing = (): SessionId => {
+  const sessionId = getSessionId()
+  if (sessionId) return sessionId
+  const newSessionId = crypto.randomUUID()
+  setSessionId(newSessionId)
 
-export default nextAppSession<SessionData>({
-  name: 'SID',
-  secret: process.env.REDIS_SECRET || '',
-  store: promisifyStore(
-    new RedisStore({
-      client: new Redis({
-        host: process.env.REDIS_HOST || '',
-        port: Number(process.env.REDIS_PORT || 0)
-      })
-    })
-  )
-})
+  return newSessionId
+}

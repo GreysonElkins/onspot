@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { UserProvider } from '@auth0/nextjs-auth0/client'
+import { ClerkProvider } from '@clerk/nextjs'
 import Navigation from "@/components/Navigation";
 
 import { Inter } from "next/font/google";
@@ -19,14 +19,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <UserProvider>
+      <ClerkProvider>
         <body className={inter.className}>
           <Navigation />
           <main>
             {children}
           </main>
         </body>
-      </UserProvider>
+      </ClerkProvider>
     </html>
   );
 }
