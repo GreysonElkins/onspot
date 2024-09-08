@@ -3,18 +3,20 @@
 import { useState, useCallback, useEffect } from "react"
 import axios, { AxiosError, AxiosRequestConfig, isAxiosError } from "axios"
 
-interface Params extends AxiosRequestConfig {
+export interface Params extends AxiosRequestConfig {
   onRender?: boolean
 }
 
-const useKpi = <T>({ onRender = true, ...params }: Params) => {
+const useApi = <T>({ onRender = true, ...params }: Params) => {
   const [data, setData] = useState<T | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const [requested, setRequested] = useState<boolean>(false)
   const [error, setError] = useState<AxiosError | null>(null)
   
   const reset = () => {
     if (loading) return // cancel? throw an error?
     setLoading(true)
+    requested && setRequested(false)
     data && setData(null)
     error && setError(null)
     setLoading(false)
@@ -30,6 +32,7 @@ const useKpi = <T>({ onRender = true, ...params }: Params) => {
     if (loading) return // throw an error?
     setLoading(true)
     try {
+      setRequested(true)
       const res = await axios<T>({ ...onCallParams, ...params})
       const resData = await res.data
       setData(resData)
@@ -45,9 +48,9 @@ const useKpi = <T>({ onRender = true, ...params }: Params) => {
 useEffect(() => {
   onRender && call()
   // eslint-disable-next-line
-  }, [onRender, call])
+}, [onRender, call, params.url, params.baseURL, params.headers, params.data])
 
-  return { data, loading, error, call, reset }
+  return { data, loading, error, call, reset, requested }
 }
 
-export default useKpi
+export default useApi

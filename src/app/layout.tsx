@@ -1,6 +1,9 @@
 import type { Metadata } from "next"
 import { ClerkProvider } from '@clerk/nextjs'
+
 import Navigation from "@/components/Navigation";
+import Sidebar from "@/components/Sidebar"
+import { SpotifyUser } from "@/context";
 
 import { Inter } from "next/font/google";
 import '@/style/global.scss'
@@ -20,12 +23,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider>
-        <body className={inter.className}>
-          <Navigation />
-          <main>
-            {children}
-          </main>
-        </body>
+        <SpotifyUser>
+          <body className={inter.className}>
+            <Navigation />
+            <div className="Main">
+              <Sidebar />
+              <main>
+                {children}
+              </main>
+            </div>
+          </body>
+        </SpotifyUser>
       </ClerkProvider>
     </html>
   );

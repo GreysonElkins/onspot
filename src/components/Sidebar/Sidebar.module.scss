@@ -1,0 +1,23 @@
+@import '@/style/variables.scss';
+
+.Sidebar {
+  width: 300px;
+  border-right: 1px solid black;
+}
+
+.Playlist {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px 8px;
+
+  div {
+    color: gray;
+    display: flex;
+  }
+}
+
+.Playlists {
+  overflow: auto;
+  max-height: calc(100% - $nav-height);
+}

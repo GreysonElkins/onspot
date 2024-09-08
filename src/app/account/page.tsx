@@ -1,16 +1,11 @@
-"use client"
-import { useRouter } from "next/navigation"
+import SpotifyAccountCard from "@/components/SpotifyAccountCard"
+
+import style from './Account.module.scss'
 
 const Account = () => {
-  const router = useRouter()
-
   return (
-    <div>
-      <div className="Card">
-        <h2>Spotify</h2>
-        <hr />
-        <button onClick={() => router.push('/api/auth/spotify')}>connect</button>
-      </div>
+    <div className={style.Account}>
+      <SpotifyAccountCard />
     </div>
   )
 }

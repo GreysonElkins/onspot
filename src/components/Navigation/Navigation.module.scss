@@ -1,3 +1,5 @@
+@import '@/style/variables.scss';
+
 @mixin nav-link {
   text-decoration: none;
   color: black;
@@ -8,8 +10,8 @@
   position: relative;
   background: white;
   border-bottom: 1px solid black;
-  min-height: 40px;
-  max-height: 40px;
+  min-height: $nav-height;
+  max-height: $nav-height;
   display: flex;
   align-items: center;
   padding: 0 20px;
@@ -18,14 +20,16 @@
 
 .NavDropdown {
   position: absolute;
-  transition: bottom 400ms;
+  transition: bottom 200ms;
   z-index: -1;
   border: 1px solid black;
+  width: 150px;
   display: flex;
   flex-direction: column;
   padding: 0;
   margin: 0;
   right: 0;
+  border-radius: 5px;
 
   button {
     @include nav-link;
@@ -36,13 +40,13 @@
   * {
     @include nav-link;
     padding: 4px 8px;
-    width: calc(100% - 16px);
+    width: calc(100% - 11px);
     border-bottom: 1px solid black;
   }
 }
 
 .open {
-  bottom: calc(-100% - 7px);
+  bottom: calc(-100% - 14px);
 }
 
 .closed {
@@ -55,4 +59,19 @@
 
 .active {
   color: green;  
+}
+
+.UserMenu {
+  position: relative;
+}
+
+.defaultUserIcon {
+  font-size: 38px;
+  color: gray;
+}
+
+.spotifyUserIcon {
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
 }

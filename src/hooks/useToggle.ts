@@ -9,7 +9,7 @@ const useToggle = (params?: Params) => {
 
   const toggle = () => setIs(prev => !prev)
 
-  return ({ is, toggle })
+  return ({ is, toggle, setIs })
 }
 
 export default useToggle

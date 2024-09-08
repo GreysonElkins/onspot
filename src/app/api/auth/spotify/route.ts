@@ -1,20 +1,40 @@
 import * as crypto from 'node:crypto'
-import { NextResponse } from "next/server"
-import { NextApiRequest } from 'next'
+import { NextResponse, NextRequest } from "next/server"
+import { auth } from '@clerk/nextjs/server'
 
+import { spotifyConfigHttpError, noAuthHttpError, noLocalUserForSpotify } from '../../errors'
 import Store from '../../store'
 import axios from 'axios'
 
-const getUserAuthentication = async (request: NextApiRequest) => {
-  const { SPOTIFY_CLIENT_ID, BASE_URL } = process.env
+export const basicAuth = 'Basic ' + btoa(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET)
 
-  if (!SPOTIFY_CLIENT_ID || !BASE_URL) return NextResponse.json(
-    { error: 'The API is not configured to authenticate with Spotify' }, 
-    { status: 500 }
-  )
+export const GET = async (request: NextRequest) => {
+  const { userId } = auth()
+  if (!userId) return noAuthHttpError
+
+  const { searchParams } = new URL(request.url || '')
+  const code = searchParams.get('code')
+  const state = searchParams.get('state') || undefined
+  if (!code && !state) return getUserAuthentication()
+  else if (!(await authStateIsAcceptable(state))) {
+    return NextResponse.json(
+      { error: 'The connection with Spotify is insecure at this time.' },
+      { status: 403 }
+    )
+  } else if (code) {
+    return getBearerToken(code)
+  }
+}
+
+const getUserAuthentication = async () => {
+  const { userId } = auth()
+  if (!userId) return noAuthHttpError
+  const { SPOTIFY_CLIENT_ID, NEXT_PUBLIC_BASE_URL } = process.env
+
+  if (!SPOTIFY_CLIENT_ID || !NEXT_PUBLIC_BASE_URL) return spotifyConfigHttpError
 
   const state = crypto.randomBytes(16).toString('hex')
-  Store.set('auth_state', state, 'spotify')
+  Store.set('auth_state', state, userId)
   const scope = [
     'user-read-private',
     'user-read-email',
@@ -26,7 +46,7 @@ const getUserAuthentication = async (request: NextApiRequest) => {
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: SPOTIFY_CLIENT_ID,
-    redirect_uri: BASE_URL + '/api/auth/spotify',
+    redirect_uri: NEXT_PUBLIC_BASE_URL + '/api/auth/spotify',
     scope,
     state,
   })
@@ -34,7 +54,7 @@ const getUserAuthentication = async (request: NextApiRequest) => {
   return NextResponse.redirect('https://accounts.spotify.com/authorize?' + params.toString())
 }
 
-type TokenResponse = {
+export type TokenResponse = {
   [key: string]: string | number
   access_token: string
   token_type: string
@@ -43,46 +63,43 @@ type TokenResponse = {
   refresh_token: string
 }
 
-const getBearerToken = async (code: string) => {
-  const { BASE_URL, SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } = process.env
-  if (!BASE_URL || !SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET) return NextResponse.json(
-    { error: "The API is not configured to authenticate with Spotify" },
-    { status: 500 }
-  )
-  const { data } = await axios.postForm<TokenResponse>('https://accounts.spotify.com/api/token', {
-    code,
-    redirect_uri: BASE_URL + '/account',
-    grant_type: 'authorization_code' 
-  }, { headers: {
-    'content-type': 'application/x-www-form-urlencoded',
-    'Authorization': 'Basic ' + btoa(SPOTIFY_CLIENT_ID + ':' + SPOTIFY_CLIENT_SECRET)
-  }}
-  )
-
+export const storeToken = async (data: TokenResponse) => {
+  const { userId } = auth()
+  if (!userId) throw noLocalUserForSpotify
   const storedResponse = Object.keys(data).map(async (key) => {
-    await Store.set(key, String(data[key]), 'spotify')
+    await Store.set(key, String(data[key]), userId)
   })
 
-  await Promise.all(storedResponse)
+  return await Promise.all(storedResponse)
+}
 
-  return NextResponse.redirect('/')
+const getBearerToken = async (code: string) => {
+  const { NEXT_PUBLIC_BASE_URL, SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } = process.env
+  if (!NEXT_PUBLIC_BASE_URL || !SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET) return spotifyConfigHttpError
+
+  const { data } = await axios.post<TokenResponse>(
+    'https://accounts.spotify.com/api/token',
+    {
+      code,
+      redirect_uri: NEXT_PUBLIC_BASE_URL + '/api/auth/spotify',
+      grant_type: 'authorization_code',
+    },
+    {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        Authorization: basicAuth,
+      },
+    }
+  )
+
+  await storeToken(data)
+
+  return NextResponse.redirect(NEXT_PUBLIC_BASE_URL)
 }
 
 const authStateIsAcceptable = async (final?: string) => {
-  const original = await Store.get('auth_state', 'spotify')
+  const { userId } = auth()
+  if (!userId) throw noLocalUserForSpotify
+  const original = await Store.get('auth_state', userId)
   return (typeof original === 'string' && original === final)
 } 
-
-export const GET = async (request: NextApiRequest) => {
-  const { searchParams } = new URL(request.url || '')
-  const code = searchParams.get('code')
-  const state = searchParams.get('state') || undefined
-  if (!code && !state) return getUserAuthentication(request)
-  else if (!await authStateIsAcceptable(state)) {
-    return NextResponse.json(
-      { error: "The connection with Spotify is insecure at this time." }, 
-      { status: 403 })
-  } else if (code) {
-    return getBearerToken(code)
-  }
-}

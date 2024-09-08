@@ -1,4 +1,6 @@
+@import '@/style/variables.scss';
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
+@import  "tabulator-tables";
 
 i {
   font-family: 'Material Symbols Outlined';  
@@ -14,10 +16,13 @@ button {
   cursor: pointer;
 }
 
-.Card {
-  border: 1px solid black;
-  width: min-content;
-  white-space: nowrap;
-  padding: 8px 16px;
-  border-radius: 5px;  
+.Main {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  height: calc(100vh - $nav-height);
+
+  main {
+    overflow: auto
+  }
 }

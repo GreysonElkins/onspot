@@ -1,4 +1,6 @@
-import React, { PropsWithChildren, useEffect } from "react"
+'use client'
+
+import React, { PropsWithChildren } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import style from './Navigation.module.scss'
