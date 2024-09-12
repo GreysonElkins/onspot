@@ -1,9 +1,15 @@
 import { useRouter } from "next/navigation"
+import CTA from "../basic/Buttons/CTA"
 
 const NoAccount: React.FC = () => {
   const router = useRouter()
   return (
-    <button onClick={() => router.push('/api/spotify/authenticate')}>connect</button>
+    <CTA 
+      first 
+      onClick={() => router.push('/api/spotify/authenticate')}
+    >
+      connect
+    </CTA>
   )
 }
 

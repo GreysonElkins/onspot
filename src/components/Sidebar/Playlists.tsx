@@ -4,6 +4,7 @@ import { usePaginatedApi } from "@/hooks"
 import { PlaylistResponse } from "@/types/Spotify"
 import Icon from "../basic/Icon"
 import { useSpotifyUser } from "@/context"
+import CTA from "../basic/Buttons/CTA"
 
 import style from './Sidebar.module.scss'
 
@@ -35,8 +36,8 @@ const Playlists = () => {
 
   return (
     <>
-      <button>by you</button>
-      <button>public</button>
+      <CTA second>by you</CTA>
+      <CTA second>public</CTA>
       <div className={style.Playlists}>
         {playlists}
       </div>

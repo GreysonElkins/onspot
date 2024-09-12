@@ -1,0 +1,34 @@
+@mixin fullscreen {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.Modal {
+  @include fullscreen();
+  display: flex;  
+}
+
+.overlay {
+  @include fullscreen();
+  background-color: black;
+  opacity: .5;
+}
+
+.modal-body {
+  margin: auto;
+  overflow: hidden;
+  background: white;
+  border-radius: 5px;
+  border: 1px black solid;
+  z-index: 5;
+}
+
+.close-button {
+  color: gray;
+  font-size: 14px;
+  text-align: right;
+  margin: 6px 2px;
+}

@@ -1,11 +1,11 @@
 'use client'
-import { MouseEvent } from 'react'
+import Image from 'next/image'
 import { SignInButton, SignedIn, SignedOut, SignOutButton } from '@clerk/nextjs'
 
 import NavDropdown from './NavDropdown'
 import NavLink from './NavLink'
 import Icon from '../basic/Icon'
-import { useToggle } from '@/hooks'
+import { useModal, useToggle } from '@/hooks'
 import { useSpotifyUser } from '@/context'
 
 import style from './Navigation.module.scss'
@@ -13,27 +13,36 @@ import style from './Navigation.module.scss'
 export default function UserMenu() {
   const { is, toggle } = useToggle()
   const { images } = useSpotifyUser()
+  const { Modal, open } = useModal()
 
   const renderIcon = () =>
     images?.[0] ? (
-      <img
-        className={style.spotifyUserIcon}
+      <Image
+        className={style['spotify-user-icon']}
         src={images[0].url}
         alt="spotify user icon"
       />
     ) : (
-      <Icon className={style.defaultUserIcon}>
+      <Icon className={style['default-user-icon']}>
         account_circle
       </Icon>
     )
 
   return (
-      <div 
+    <>
+    <div 
         className={style.UserMenu}
-        onClick={toggle}
+        onClick={e => e.preventDefault()}
       >
-        {renderIcon()}
-        <NavDropdown isOpen={is}>
+        <button
+          className={style['nav-open-button']}
+          onClick={open}
+        >
+          {renderIcon()}
+        </button>
+      </div>
+      <Modal className={style['user-modal']}>
+        <div className={style['nav-menu']}>
           <SignedIn>
             <NavLink href="/account ">account</NavLink>
             <SignOutButton />
@@ -41,7 +50,8 @@ export default function UserMenu() {
           <SignedOut>
             <SignInButton />
           </SignedOut>
-        </NavDropdown>
-      </div>
+        </div>
+      </Modal>
+    </>
   )
 }

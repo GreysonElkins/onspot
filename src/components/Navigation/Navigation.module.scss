@@ -7,7 +7,6 @@
 }
 
 .Navigation {
-  position: relative;
   background: white;
   border-bottom: 1px solid black;
   min-height: $nav-height;
@@ -18,59 +17,59 @@
   justify-content: flex-end;
 }
 
-.NavDropdown {
-  position: absolute;
-  transition: bottom 200ms;
-  z-index: -1;
-  border: 1px solid black;
+.nav-menu {
+  transition: top 200ms;
   width: 150px;
   display: flex;
   flex-direction: column;
   padding: 0;
   margin: 0;
-  right: 0;
-  border-radius: 5px;
-
-  button {
-    @include nav-link;
-    background: none;
-    border: none;
-  }
 
   * {
-    @include nav-link;
-    padding: 4px 8px;
-    width: calc(100% - 11px);
+    cursor: pointer;
+    background: none;
+    border: none;
+    border-top: 1px solid black;
     border-bottom: 1px solid black;
+    margin-bottom: -1px;
+    font-size: 12px;
+    text-transform: capitalize;
+    text-decoration: none;
+    text-align: right;
+    padding: 4px 16px;
+    color: black;
+    &:hover {
+      background: gray;
+    }
   }
-}
-
-.open {
-  bottom: calc(-100% - 14px);
-}
-
-.closed {
-  bottom: 0
-}
-
-.NavLink {
-  @include nav-link;
 }
 
 .active {
   color: green;  
 }
 
+.user-modal {
+  position: absolute;
+  top: calc($nav-height + 5px);
+  right: 5px;
+  border-top: none;
+}
+
 .UserMenu {
   position: relative;
 }
 
-.defaultUserIcon {
+.nav-open-button {
+  background: none;
+  border: none;
+}
+
+.default-user-icon {
   font-size: 38px;
   color: gray;
 }
 
-.spotifyUserIcon {
+.spotify-user-icon {
   border-radius: 50%;
   height: 40px;
   width: 40px;

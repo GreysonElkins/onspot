@@ -7,7 +7,7 @@ interface Props extends PropsWithChildren {
 }
 
 const NavDropdown: React.FC<Props> = ({ isOpen, children }) => (
-  <menu className={`${style.NavDropdown} ${isOpen ? style.open : style.closed}`}>{children}</menu>
+  <menu className={`${style['nav-dropdown']} ${isOpen ? style.open : style.closed}`}>{children}</menu>
 )
 
 export default NavDropdown
