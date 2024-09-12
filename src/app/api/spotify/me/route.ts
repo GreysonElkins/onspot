@@ -2,8 +2,8 @@ import axios from 'axios'
 import { NextResponse } from 'next/server'
 
 import { noAuthHttpError, NoLocalUserForSpotify } from '../../errors'
-import { refreshAndTryAgain } from '../../auth/spotify/refresh'
-import getSpotifyToken from '../../auth/spotify/getSpotifyToken'
+import { refreshAndTryAgain } from '../../spotify/authenticate/refresh'
+import getSpotifyToken from '../../spotify/authenticate/getSpotifyToken'
 
 export const GET = async () => {
   try {

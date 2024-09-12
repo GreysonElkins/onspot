@@ -46,7 +46,7 @@ const getUserAuthentication = async () => {
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: SPOTIFY_CLIENT_ID,
-    redirect_uri: NEXT_PUBLIC_BASE_URL + '/api/auth/spotify',
+    redirect_uri: NEXT_PUBLIC_BASE_URL + '/api/spotify/authenticate',
     scope,
     state,
   })
@@ -81,7 +81,7 @@ const getBearerToken = async (code: string) => {
     'https://accounts.spotify.com/api/token',
     {
       code,
-      redirect_uri: NEXT_PUBLIC_BASE_URL + '/api/auth/spotify',
+      redirect_uri: NEXT_PUBLIC_BASE_URL + '/api/spotify/authenticate',
       grant_type: 'authorization_code',
     },
     {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import getSpotifyToken from '@/app/api/auth/spotify/getSpotifyToken'
+import getSpotifyToken from '@/app/api/spotify/authenticate/getSpotifyToken'
 import { noAuthHttpError, NoLocalUserForSpotify } from '@/app/api/errors'
 import axios from 'axios'
 
