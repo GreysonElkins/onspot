@@ -1,3 +1,5 @@
+@import '@/style/variables.scss';
+
 .IconButton {
   background: none;
   border: none;
@@ -18,9 +20,10 @@
 }
 
 .second {
-  background-color: gray;
+  background: $black-4;
+  @include lighten-on-hover();
 }
 
 .third {
-  background-color: black;
+  background-color: $black-2;
 }

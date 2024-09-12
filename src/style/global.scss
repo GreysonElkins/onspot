@@ -9,6 +9,8 @@ i {
 }
 
 body {
+  background: $black-1;
+  color: $white;
   margin: 0;
 }
 
@@ -24,4 +26,8 @@ button {
   main {
     overflow: auto
   }
+}
+
+hr {
+  border-color: $black-1;
 }

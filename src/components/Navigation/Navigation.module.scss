@@ -1,14 +1,6 @@
 @import '@/style/variables.scss';
 
-@mixin nav-link {
-  text-decoration: none;
-  color: black;
-  font-size: 12px;
-}
-
 .Navigation {
-  background: white;
-  border-bottom: 1px solid black;
   min-height: $nav-height;
   max-height: $nav-height;
   display: flex;
@@ -22,25 +14,21 @@
   width: 150px;
   display: flex;
   flex-direction: column;
-  padding: 0;
   margin: 0;
+  padding: 6px 5px;
 
   * {
     cursor: pointer;
-    background: none;
+    color: white;
     border: none;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
     margin-bottom: -1px;
     font-size: 12px;
     text-transform: capitalize;
     text-decoration: none;
-    text-align: right;
-    padding: 4px 16px;
-    color: black;
-    &:hover {
-      background: gray;
-    }
+    text-align: left;
+    padding: 8px 16px;
+    background: $black-4;
+    @include lighten-on-hover();
   }
 }
 
@@ -66,7 +54,7 @@
 
 .default-user-icon {
   font-size: 38px;
-  color: gray;
+  color: $white;
 }
 
 .spotify-user-icon {

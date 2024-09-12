@@ -1,3 +1,5 @@
+@import '@/style/variables.scss';
+
 @mixin fullscreen {
   position: absolute;
   top: 0;
@@ -20,14 +22,13 @@
 .modal-body {
   margin: auto;
   overflow: hidden;
-  background: white;
+  background: $black-4;
   border-radius: 5px;
   border: 1px black solid;
   z-index: 5;
 }
 
 .close-button {
-  color: gray;
   font-size: 14px;
   text-align: right;
   margin: 6px 2px;
