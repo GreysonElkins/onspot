@@ -4,9 +4,11 @@ import { ClerkProvider } from '@clerk/nextjs'
 import Navigation from "@/components/Navigation";
 import Sidebar from "@/components/Sidebar"
 import { SpotifyUser } from "@/context";
+import { ToastContainer } from 'react-toastify'
 
 import { Inter } from "next/font/google";
 import '@/style/global.scss'
+import 'react-toastify/dist/ReactToastify.css'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +34,7 @@ export default function RootLayout({
                 {children}
               </main>
             </div>
+            <ToastContainer />
           </body>
         </SpotifyUser>
       </ClerkProvider>
