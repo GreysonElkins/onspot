@@ -3,7 +3,7 @@ import { auth } from '@clerk/nextjs/server'
 
 import { noLocalUserForSpotify } from '../../errors'
 import Store from "../../store"
-import { basicAuth, TokenResponse, storeToken } from "./route"
+import { basicAuth, TokenResponse, storeToken } from "./scripts"
 
 const refresh = async () => {
   const { userId } = auth()

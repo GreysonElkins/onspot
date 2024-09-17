@@ -6,7 +6,7 @@ import { spotifyConfigHttpError, noAuthHttpError, noLocalUserForSpotify } from '
 import Store from '../../store'
 import axios from 'axios'
 
-export const basicAuth = 'Basic ' + btoa(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET)
+import { TokenResponse, storeToken, basicAuth } from './scripts'
 
 export const GET = async (request: NextRequest) => {
   const { userId } = auth()
@@ -52,25 +52,6 @@ const getUserAuthentication = async () => {
   })
 
   return NextResponse.redirect('https://accounts.spotify.com/authorize?' + params.toString())
-}
-
-export type TokenResponse = {
-  [key: string]: string | number
-  access_token: string
-  token_type: string
-  scope: string
-  expires_in: number
-  refresh_token: string
-}
-
-export const storeToken = async (data: TokenResponse) => {
-  const { userId } = auth()
-  if (!userId) throw noLocalUserForSpotify
-  const storedResponse = Object.keys(data).map(async (key) => {
-    await Store.set(key, String(data[key]), userId)
-  })
-
-  return await Promise.all(storedResponse)
 }
 
 const getBearerToken = async (code: string) => {
