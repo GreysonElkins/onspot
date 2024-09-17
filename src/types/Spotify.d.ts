@@ -63,7 +63,7 @@ export type Track = {
       uri: string
     }
     artists: Artist[]
-    available_markets: Artist[]
+    available_markets: string[]
     disc_number: number
     duration: number
     explicit: boolean

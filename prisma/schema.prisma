@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Track {
+  disc_number Int
+  duration Int
+  explicit Boolean
+  href String
+  id String @id
+  is_local Boolean
+  name String
+  popularity Int
+  preview_url String
+  track_number Int
+  type String
+  uri String 
+  artists ArtistsToTracks[]
+  album AlbumsToTracks[]
+  saved_by UsersTracks[] 
+}
+
+model ArtistsToTracks {
+  artist_id String 
+  artist Artist @relation(fields: [artist_id], references: [id])
+  track_id String
+  track Track @relation(fields: [track_id], references: [id])
+  @@id([artist_id, track_id])
+}
+
+model Artist {
+  href String
+  id String @id 
+  name String
+  type String
+  uri String
+  tracks ArtistsToTracks[]
+  albums ArtistsToAlbums[]
+}
+
+model User {
+  id String @id
+  tracks UsersTracks[]
+  @@map("users")
+}
+
+model UsersTracks {
+  added_at DateTime
+  ingested_at DateTime @default(now())
+  user User @relation(fields: [user_id], references: [id])
+  user_id String
+  track Track @relation(fields: [track_id], references: [id])
+  track_id String
+  @@id([user_id])
+}
+
+model ArtistsToAlbums {
+  artist Artist @relation(fields: artist_id, references: [id])
+  artist_id String
+  album Album @relation(fields: album_id, references: [id])
+  album_id String
+  @@id([artist_id, album_id])
+}
+
+model AlbumsToTracks {
+  album Album @relation(fields: album_id, references: [id])
+  album_id String
+  track Track @relation(fields: track_id, references: [id])
+  track_id String
+  @@id([album_id, track_id])
+}
+
+model Album {
+  album_type String
+  artist ArtistsToAlbums[]
+  href String
+  id String @id
+  name String
+  release_date DateTime
+  release_date_precision String
+  total_tracks Int
+  type String
+  uri String
+  tracks AlbumsToTracks[]
+}
